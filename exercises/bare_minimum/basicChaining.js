@@ -1,3 +1,4 @@
+
 /*
  * Write a function WITH NO CALLBACKS that,
  * (1) reads a GitHub username from a `readFilePath`
@@ -8,16 +9,28 @@
  * HINT: We exported some similar promise-returning functions in previous exercises
  */
 
+
+
+
 var fs = require('fs');
 var Promise = require('bluebird');
-
+var promisifiedFuncs = require('./promisification');
+var promiseConstructor = require('./promiseConstructor');
 
 
 var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
-  // TODO
+  return promiseConstructor.pluckFirstLineFromFileAsync(readFilePath)
+    .then(function(user){
+      return promisifiedFuncs.getGitHubProfileAsync(user);
+    })
+    .then(function(profileData) {
+      console.log("profile data :", profileData);
+      fs.writeFileSync(writeFilePath, JSON.stringify(profileData));
+    });
 };
 
 // Export these functions so we can test them
 module.exports = {
   fetchProfileAndWriteToFile: fetchProfileAndWriteToFile
 };
+
